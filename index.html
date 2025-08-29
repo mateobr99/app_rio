@@ -48,7 +48,7 @@
         
         <!-- Aquí va la imagen de tu perro -->
         <div class="mb-8 rounded-full overflow-hidden w-32 h-32 mx-auto border-4 border-white shadow-lg">
-            <img id="dog-image" src="https://drive.google.com/file/d/19_IqWpB_IVgfyTxSeUn4VBztU2B-Y_o1/view?usp=drive_link" alt="Foto de tu perro" class="w-full h-full object-cover">
+            <img id="dog-image" src="https://placehold.co/128x128/e2e8f0/1a202c?text=Foto+de+tu+perro" alt="Foto de tu perro" class="w-full h-full object-cover">
         </div>
 
         <div id="main-content">
@@ -107,7 +107,7 @@
         auth.onAuthStateChanged(user => {
             if (user) {
                 userId = user.uid;
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'meals', userId);
+                const docRef = doc(db, 'public_meals', userId);
 
                 // Listen for real-time updates
                 onSnapshot(docRef, (doc) => {
@@ -139,7 +139,7 @@
         }
         
         function toggleMealAndSave(mealName) {
-            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'meals', userId);
+            const docRef = doc(db, 'public_meals', userId);
             setDoc(docRef, { [mealName]: !document.getElementById(`${mealName}-btn`).classList.contains('given') }, { merge: true });
         }
     </script>
