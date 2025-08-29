@@ -79,7 +79,21 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Firebase setup
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        
+        // Sign in anonymously
+        signInAnonymously(auth);
+
         const breakfastBtn = document.getElementById('breakfast-btn');
         const lunchBtn = document.getElementById('lunch-btn');
         const dinnerBtn = document.getElementById('dinner-btn');
@@ -88,19 +102,46 @@
         const lunchStatus = document.getElementById('lunch-status');
         const dinnerStatus = document.getElementById('dinner-status');
 
-        function toggleMeal(btn, status) {
-            btn.classList.toggle('given');
-            if (btn.classList.contains('given')) {
+        let userId = 'guest';
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                userId = user.uid;
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'meals', userId);
+
+                // Listen for real-time updates
+                onSnapshot(docRef, (doc) => {
+                    const meals = doc.exists() ? doc.data() : { breakfast: false, lunch: false, dinner: false };
+                    updateUI(meals);
+                });
+
+                // Add event listeners inside the auth state change to ensure user ID is ready
+                breakfastBtn.addEventListener('click', () => toggleMealAndSave('breakfast'));
+                lunchBtn.addEventListener('click', () => toggleMealAndSave('lunch'));
+                dinnerBtn.addEventListener('click', () => toggleMealAndSave('dinner'));
+            }
+        });
+
+        function updateUI(meals) {
+            updateButton(breakfastBtn, breakfastStatus, meals.breakfast);
+            updateButton(lunchBtn, lunchStatus, meals.lunch);
+            updateButton(dinnerBtn, dinnerStatus, meals.dinner);
+        }
+
+        function updateButton(btn, status, isGiven) {
+            if (isGiven) {
+                btn.classList.add('given');
                 status.innerHTML = `<span class="text-white">✔</span>`;
             } else {
+                btn.classList.remove('given');
                 status.innerHTML = `<span class="text-red-500">❌</span>`;
             }
         }
-
-        breakfastBtn.addEventListener('click', () => toggleMeal(breakfastBtn, breakfastStatus));
-        lunchBtn.addEventListener('click', () => toggleMeal(lunchBtn, lunchStatus));
-        dinnerBtn.addEventListener('click', () => toggleMeal(dinnerBtn, dinnerStatus));
         
+        function toggleMealAndSave(mealName) {
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'meals', userId);
+            setDoc(docRef, { [mealName]: !document.getElementById(`${mealName}-btn`).classList.contains('given') }, { merge: true });
+        }
     </script>
 </body>
 </html>
