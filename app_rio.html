@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Comidas del Perro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #1a202c;
+        }
+        .container {
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            width: 100%;
+            max-width: 480px;
+            text-align: center;
+        }
+        .meal-button {
+            transition: transform 0.2s, background-color 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .meal-button:hover {
+            transform: translateY(-2px);
+        }
+        .meal-button.given {
+            background-color: #22c55e;
+            color: white;
+            border-color: #22c55e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-3xl sm:text-4xl font-bold mb-2 text-gray-800">Cuidado de Firulais</h1>
+        <p class="text-gray-500 mb-8 text-sm sm:text-base">¡Controla las comidas de tu mascota en familia!</p>
+        
+        <!-- Aquí va la imagen de tu perro -->
+        <div class="mb-8 rounded-full overflow-hidden w-32 h-32 mx-auto border-4 border-white shadow-lg">
+            <img id="dog-image" src="https://drive.google.com/file/d/19_IqWpB_IVgfyTxSeUn4VBztU2B-Y_o1/view?usp=drive_link" alt="Foto de tu perro" class="w-full h-full object-cover">
+        </div>
+
+        <div id="main-content">
+            <div id="daily-status" class="bg-gray-100 p-4 rounded-xl mb-6 text-sm text-gray-600">
+                <p>Las comidas se reinician diariamente.</p>
+            </div>
+            
+            <div class="space-y-4">
+                <button id="breakfast-btn" class="meal-button bg-white text-gray-700 font-semibold py-4 px-6 rounded-xl border-2 border-gray-200 w-full hover:bg-green-500 hover:text-white">
+                    <span>Desayuno</span>
+                    <span id="breakfast-status">
+                        <span class="text-red-500">❌</span>
+                    </span>
+                </button>
+                <button id="lunch-btn" class="meal-button bg-white text-gray-700 font-semibold py-4 px-6 rounded-xl border-2 border-gray-200 w-full hover:bg-green-500 hover:text-white">
+                    <span>Almuerzo</span>
+                    <span id="lunch-status">
+                        <span class="text-red-500">❌</span>
+                    </span>
+                </button>
+                <button id="dinner-btn" class="meal-button bg-white text-gray-700 font-semibold py-4 px-6 rounded-xl border-2 border-gray-200 w-full hover:bg-green-500 hover:text-white">
+                    <span>Cena</span>
+                    <span id="dinner-status">
+                        <span class="text-red-500">❌</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const breakfastBtn = document.getElementById('breakfast-btn');
+        const lunchBtn = document.getElementById('lunch-btn');
+        const dinnerBtn = document.getElementById('dinner-btn');
+        
+        const breakfastStatus = document.getElementById('breakfast-status');
+        const lunchStatus = document.getElementById('lunch-status');
+        const dinnerStatus = document.getElementById('dinner-status');
+
+        function toggleMeal(btn, status) {
+            btn.classList.toggle('given');
+            if (btn.classList.contains('given')) {
+                status.innerHTML = `<span class="text-white">✔</span>`;
+            } else {
+                status.innerHTML = `<span class="text-red-500">❌</span>`;
+            }
+        }
+
+        breakfastBtn.addEventListener('click', () => toggleMeal(breakfastBtn, breakfastStatus));
+        lunchBtn.addEventListener('click', () => toggleMeal(lunchBtn, lunchStatus));
+        dinnerBtn.addEventListener('click', () => toggleMeal(dinnerBtn, dinnerStatus));
+        
+    </script>
+</body>
+</html>
