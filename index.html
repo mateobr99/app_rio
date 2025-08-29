@@ -3,146 +3,430 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control de Comidas del Perro</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>FoodTracker para Firulais</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f0f4f8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            color: #1a202c;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
         .container {
             background-color: white;
-            padding: 2.5rem;
-            border-radius: 1.5rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             width: 100%;
-            max-width: 480px;
+            max-width: 500px;
+            padding: 20px;
             text-align: center;
         }
-        .meal-button {
-            transition: transform 0.2s, background-color 0.2s;
+        
+        header {
+            margin-bottom: 15px;
+        }
+        
+        h1 {
+            color: #2575fc;
+            margin-bottom: 8px;
+            font-size: 24px;
+        }
+        
+        .description {
+            color: #666;
+            margin-bottom: 8px;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        
+        .date-display {
+            background: #f0f7ff;
+            padding: 8px;
+            border-radius: 10px;
+            margin: 12px 0;
+            font-weight: bold;
+            color: #2575fc;
+            font-size: 14px;
+        }
+        
+        .meal-tracker {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 12px;
+            margin: 15px 0;
+        }
+        
+        .meal-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 12px;
+            display: flex;
             align-items: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
-        .meal-button:hover {
-            transform: translateY(-2px);
+        
+        .meal-card:active {
+            transform: scale(0.98);
         }
-        .meal-button.given {
-            background-color: #22c55e;
+        
+        .meal-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 18px;
             color: white;
-            border-color: #22c55e;
+            flex-shrink: 0;
+        }
+        
+        .breakfast .meal-icon {
+            background: #ff9a3c;
+        }
+        
+        .lunch .meal-icon {
+            background: #6a11cb;
+        }
+        
+        .dinner .meal-icon {
+            background: #2575fc;
+        }
+        
+        .meal-info {
+            flex-grow: 1;
+            text-align: left;
+        }
+        
+        .meal-name {
+            font-weight: bold;
+            color: #444;
+            font-size: 16px;
+        }
+        
+        .meal-time {
+            font-size: 0.8rem;
+            color: #777;
+        }
+        
+        .meal-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            min-width: 90px;
+            text-align: center;
+            user-select: none;
+        }
+        
+        .status-not-eaten {
+            background: #ffdede;
+            color: #ff5252;
+        }
+        
+        .status-eaten {
+            background: #d6ffde;
+            color: #2ecc71;
+        }
+        
+        .dog-image-container {
+            margin: 15px 0;
+            position: relative;
+        }
+        
+        .dog-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #6a11cb;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .reset-button {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+        
+        .reset-button:active {
+            transform: scale(0.98);
+        }
+        
+        footer {
+            margin-top: 20px;
+            color: white;
+            text-align: center;
+            font-size: 12px;
+            padding: 0 10px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .instructions {
+            margin-top: 15px;
+            background: #e8f4fc;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: left;
+            font-size: 12px;
+        }
+        
+        .instructions h3 {
+            color: #2575fc;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 500px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .meal-card {
+                flex-direction: row;
+                text-align: left;
+            }
+            
+            .meal-icon {
+                margin-right: 12px;
+                margin-bottom: 0;
+            }
+            
+            .meal-info {
+                text-align: left;
+                margin-bottom: 0;
+            }
+            
+            h1 {
+                font-size: 22px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="text-3xl sm:text-4xl font-bold mb-2 text-gray-800">Control de comidas de Rio</h1>
-        <p class="text-gray-500 mb-8 text-sm sm:text-base">¡Rio el carterista!</p>
+        <header>
+            <h1>FoodTracker para Firulais</h1>
+            <p class="description">¡Controla las comidas de tu mascota!</p>
+            <div class="date-display" id="current-date">Cargando fecha...</div>
+        </header>
         
-        <!-- Aquí va la imagen de tu perro -->
-        <div class="mb-8 rounded-full overflow-hidden w-32 h-32 mx-auto border-4 border-white shadow-lg">
-            <img id="dog-image" src="https://photos.fife.usercontent.google.com/pw/AP1GczOeeWn3sy47dOZfnmjmn1o-_S8uMI_RlPrix5WbPbySBQKCEsPIVsbg=w665-h887-s-no-gm?authuser=0" alt="Foto de tu perro" class="w-full h-full object-cover">
+        <div class="dog-image-container">
+            <img id="dog-image" src="https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=612&q=80" alt="Foto de tu perro" class="dog-image">
         </div>
-
-        <div id="main-content">
-            <div id="daily-status" class="bg-gray-100 p-4 rounded-xl mb-6 text-sm text-gray-600">
-                <p>Las comidas se reinician diariamente.</p>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        
+        <div class="meal-tracker">
+            <div class="meal-card breakfast" data-meal="breakfast">
+                <div class="meal-icon">
+                    <i class="fas fa-egg"></i>
+                </div>
+                <div class="meal-info">
+                    <div class="meal-name">Desayuno</div>
+                    <div class="meal-time">7:00 - 9:00 AM</div>
+                </div>
+                <div class="meal-status status-not-eaten" id="breakfast-status">
+                    No comido
+                </div>
             </div>
             
-            <div class="space-y-4">
-                <button id="breakfast-btn" class="meal-button bg-white text-gray-700 font-semibold py-4 px-6 rounded-xl border-2 border-gray-200 w-full hover:bg-green-500 hover:text-white">
-                    <span>Desayuno</span>
-                    <span id="breakfast-status">
-                        <span class="text-red-500">❌</span>
-                    </span>
-                </button>
-                <button id="lunch-btn" class="meal-button bg-white text-gray-700 font-semibold py-4 px-6 rounded-xl border-2 border-gray-200 w-full hover:bg-green-500 hover:text-white">
-                    <span>Almuerzo</span>
-                    <span id="lunch-status">
-                        <span class="text-red-500">❌</span>
-                    </span>
-                </button>
-                <button id="dinner-btn" class="meal-button bg-white text-gray-700 font-semibold py-4 px-6 rounded-xl border-2 border-gray-200 w-full hover:bg-green-500 hover:text-white">
-                    <span>Cena</span>
-                    <span id="dinner-status">
-                        <span class="text-red-500">❌</span>
-                    </span>
-                </button>
+            <div class="meal-card lunch" data-meal="lunch">
+                <div class="meal-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <div class="meal-info">
+                    <div class="meal-name">Almuerzo</div>
+                    <div class="meal-time">12:00 - 2:00 PM</div>
+                </div>
+                <div class="meal-status status-not-eaten" id="lunch-status">
+                    No comido
+                </div>
+            </div>
+            
+            <div class="meal-card dinner" data-meal="dinner">
+                <div class="meal-icon">
+                    <i class="fas fa-moon"></i>
+                </div>
+                <div class="meal-info">
+                    <div class="meal-name">Cena</div>
+                    <div class="meal-time">6:00 - 8:00 PM</div>
+                </div>
+                <div class="meal-status status-not-eaten" id="dinner-status">
+                    No comido
+                </div>
             </div>
         </div>
+        
+        <button class="reset-button" id="reset-button">
+            <i class="fas fa-sync-alt"></i> Reiniciar para mañana
+        </button>
+        
+        <div class="instructions">
+            <h3>Instrucciones:</h3>
+            <p>Toca cada comida para cambiar entre "No comido" y "¡Comido!". Los datos se guardan automáticamente.</p>
+        </div>
     </div>
+    
+    <footer>
+        <p>¡Cuida la alimentación de tu mascota! 🐶</p>
+    </footer>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <script>
+        // Variables globales
+        let mealStates = {
+            breakfast: false,
+            lunch: false,
+            dinner: false
+        };
 
-        // Firebase setup
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        
-        // Sign in anonymously
-        signInAnonymously(auth);
-
-        const breakfastBtn = document.getElementById('breakfast-btn');
-        const lunchBtn = document.getElementById('lunch-btn');
-        const dinnerBtn = document.getElementById('dinner-btn');
-        
-        const breakfastStatus = document.getElementById('breakfast-status');
-        const lunchStatus = document.getElementById('lunch-status');
-        const dinnerStatus = document.getElementById('dinner-status');
-
-        let userId = 'guest';
-
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                userId = user.uid;
-                const docRef = doc(db, 'public_meals', userId);
-
-                // Listen for real-time updates
-                onSnapshot(docRef, (doc) => {
-                    const meals = doc.exists() ? doc.data() : { breakfast: false, lunch: false, dinner: false };
-                    updateUI(meals);
-                });
-
-                // Add event listeners inside the auth state change to ensure user ID is ready
-                breakfastBtn.addEventListener('click', () => toggleMealAndSave('breakfast'));
-                lunchBtn.addEventListener('click', () => toggleMealAndSave('lunch'));
-                dinnerBtn.addEventListener('click', () => toggleMealAndSave('dinner'));
-            }
-        });
-
-        function updateUI(meals) {
-            updateButton(breakfastBtn, breakfastStatus, meals.breakfast);
-            updateButton(lunchBtn, lunchStatus, meals.lunch);
-            updateButton(dinnerBtn, dinnerStatus, meals.dinner);
+        // Actualizar fecha actual
+        function updateDate() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('current-date').textContent = now.toLocaleDateString('es-ES', options);
         }
-
-        function updateButton(btn, status, isGiven) {
-            if (isGiven) {
-                btn.classList.add('given');
-                status.innerHTML = `<span class="text-white">✔</span>`;
+        
+        // Cargar estado de las comidas desde localStorage
+        function loadMealStatus() {
+            const today = new Date().toDateString();
+            const savedDate = localStorage.getItem('mealDate');
+            
+            // Si es un nuevo día, reiniciar estados
+            if (savedDate !== today) {
+                resetAllMeals();
+                localStorage.setItem('mealDate', today);
+                return;
+            }
+            
+            // Cargar estados guardados
+            const meals = ['breakfast', 'lunch', 'dinner'];
+            meals.forEach(meal => {
+                const status = localStorage.getItem(meal);
+                if (status === 'eaten') {
+                    setMealStatus(meal, true);
+                    mealStates[meal] = true;
+                }
+            });
+            
+            updateProgressBar();
+        }
+        
+        // Cambiar estado de una comida
+        function toggleMeal(meal) {
+            mealStates[meal] = !mealStates[meal];
+            setMealStatus(meal, mealStates[meal]);
+            localStorage.setItem(meal, mealStates[meal] ? 'eaten' : 'not-eaten');
+            updateProgressBar();
+        }
+        
+        // Establecer visualmente el estado de una comida
+        function setMealStatus(meal, isEaten) {
+            const statusElement = document.getElementById(`${meal}-status`);
+            
+            if (isEaten) {
+                statusElement.textContent = '¡Comido!';
+                statusElement.classList.remove('status-not-eaten');
+                statusElement.classList.add('status-eaten');
             } else {
-                btn.classList.remove('given');
-                status.innerHTML = `<span class="text-red-500">❌</span>`;
+                statusElement.textContent = 'No comido';
+                statusElement.classList.remove('status-eaten');
+                statusElement.classList.add('status-not-eaten');
             }
         }
         
-        function toggleMealAndSave(mealName) {
-            const docRef = doc(db, 'public_meals', userId);
-            setDoc(docRef, { [mealName]: !document.getElementById(`${mealName}-btn`).classList.contains('given') }, { merge: true });
+        // Actualizar barra de progreso
+        function updateProgressBar() {
+            const meals = ['breakfast', 'lunch', 'dinner'];
+            let eatenCount = 0;
+            
+            meals.forEach(meal => {
+                if (mealStates[meal]) eatenCount++;
+            });
+            
+            const percentage = (eatenCount / meals.length) * 100;
+            document.getElementById('progress-fill').style.width = `${percentage}%`;
         }
+        
+        // Reiniciar todas las comidas
+        function resetAllMeals() {
+            const meals = ['breakfast', 'lunch', 'dinner'];
+            meals.forEach(meal => {
+                mealStates[meal] = false;
+                setMealStatus(meal, false);
+                localStorage.setItem(meal, 'not-eaten');
+            });
+            
+            updateProgressBar();
+            alert('¡Estados reiniciados para un nuevo día!');
+        }
+        
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Listeners para las comidas
+            document.querySelectorAll('.meal-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const meal = this.getAttribute('data-meal');
+                    toggleMeal(meal);
+                });
+            });
+            
+            // Listener para el botón de reinicio
+            document.getElementById('reset-button').addEventListener('click', resetAllMeals);
+        }
+        
+        // Inicializar la aplicación
+        function initApp() {
+            updateDate();
+            loadMealStatus();
+            setupEventListeners();
+        }
+        
+        // Iniciar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
-
